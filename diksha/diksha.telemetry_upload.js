@@ -9,7 +9,7 @@ let fs = require('fs');
 let dns = require('dns');
 let cron = require('node-cron');
 // let registerURL = 'https://api.ekstep.in/api-manager/v1/consumer/cdn_device/credential/register';
-let telemetryURL = 'https://staging.open-diksha.org/api/data/v1/telemetry';
+let telemetryURL = 'https://staging.ntp.net.in/api/data/v1/telemetry';
 let appJwt = '';
 let zlib = require('zlib');
 
