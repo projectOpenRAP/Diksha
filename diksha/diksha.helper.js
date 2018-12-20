@@ -104,7 +104,7 @@ let registerDikshaApp = () => {
   	}
 	}'
 */
-let registerdikshaDevice = (token) => {
+let registerDikshaDevice = (token) => {
 	let defer = q.defer();
 	const pattern = 'YYYY-MM-DD HH:mm:ss:SSSZZ';
 	const timestamp = getTimestamp(pattern);
@@ -155,7 +155,7 @@ let generateOriginalJWTs = () => {
 		return generateJwt(key, secret);
 	}).then(value => {
 		token = value.token;
-		return registerdikshaDevice(token);
+		return registerDikshaDevice(token);
 	}).then(value => {
 		key = value.key;
 		secret = value.secret;
