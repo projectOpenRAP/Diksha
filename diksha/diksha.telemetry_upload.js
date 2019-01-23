@@ -134,24 +134,20 @@ let checkConnectivity = () => {
 
 let requestTokenGeneration = () => {
     let defer = q.defer();
-    console.log("Bongiorno")
-    if (tmJwt.length < 1) {
-        generateOriginalJWTs().then(value => {
-            console.log("We have obtained " + value.token);
-            tmJwt = value.token;
-            currentTokenStatus = 1;
-            return uploadTelemetryDirectory();
-        }).then(value => {
-            return defer.resolve();
-        }).catch(e => {
-            console.log("Error: " + e.err);
-            return defer.reject();
-        });
-    } else {
-        console.log("Reusing key")
-        uploadTelemetryDirectory();
+    console.log("Fetching telemetry keys.");
+
+    generateOriginalJWTs().then(value => {
+        console.log("We have obtained " + value.token);
+        tmJwt = value.token;
+        currentTokenStatus = 1;
+        return uploadTelemetryDirectory();
+    }).then(value => {
         defer.resolve();
-    }
+    }).catch(e => {
+        console.log("Error: " + e.err);
+        defer.reject();
+    });
+
     return defer.promise;
 }
 
