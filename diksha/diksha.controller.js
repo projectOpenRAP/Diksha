@@ -82,6 +82,7 @@ let cleanKeys = (fieldList) => {
         Plugin: "Plugins",
         Template: "Templates",
         Resource: "Resources",
+        TextBook: "Textbooks",
     }
 
     let remainingAllowedKeys = [
