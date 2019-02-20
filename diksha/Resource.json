@@ -1,0 +1,97 @@
+{
+	"response": {
+		"id": "org.ekstep.genie.content.home",
+		"sections": [{
+				"display": {
+					"name": {
+						"en": "Featured Content"
+					}
+				},
+
+				"searchQuery": {
+					"request": {
+						"filters": {
+							"objectType": ["Content"],
+							"contentType": ["Resource"],
+							"status": ["Live"]
+						},
+						"sort_by": {
+							"me_averageRating": "desc"
+						},
+						"limit": 10,
+						"exists": ["badgeAssertions"]
+					}
+				}
+			},
+
+			{
+				"display": {
+					"name": {
+						"en": "Textbooks"
+					}
+				},
+
+				"searchQuery": {
+					"request": {
+						"filters": {
+							"contentType": ["TextBook"],
+							"status": ["Live"],
+							"objectType": ["Content"]
+						},
+						"sort_by": {
+							"me_averageRating": "desc"
+						},
+						"limit": 10
+					}
+				}
+			},
+			{
+				"display": {
+					"name": {
+						"en": "Learning Material"
+					}
+				},
+
+				"searchQuery": {
+					"request": {
+						"query": "",
+						"filters": {
+							"contentType": ["Resource"],
+							"resourceType": ["learn"],
+							"status": ["Live"],
+							"objectType": ["Content"]
+						},
+						"sort_by": {
+							"me_averageRating": "desc"
+						},
+						"limit": 10
+					}
+				}
+			},
+
+			{
+				"display": {
+					"name": {
+						"en": "Practice and Test Material"
+					}
+				},
+
+				"searchQuery": {
+					"request": {
+						"query": "",
+						"filters": {
+							"contentType": ["Resource"],
+							"resourceType": ["practice", "test"],
+							"status": ["Live"],
+							"objectType": ["Content"]
+						},
+						"sort_by": {
+							"me_averageRating": "desc"
+						},
+						"limit": 10
+					}
+				}
+			}
+		]
+	}
+}

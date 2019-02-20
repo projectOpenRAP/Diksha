@@ -1,0 +1,129 @@
+{
+    "id": "ekstep.genie.content.home",
+    "ver": "1.0",
+    "ts": "2017-06-13T12:05:30+00:00",
+    "params": {
+        "resmsgid": "c3800c567711b10e128d3b1353328a60f6bb5583",
+        "msgid": "ff305d54-85b4-341b-da2f-eb6b9e5460fa",
+        "status": "successful",
+        "err": "",
+        "errmsg": ""
+    },
+    "result": {
+        "response": {
+            "id": "org.ekstep.genie.content.home",
+            "banners": null,
+            "name": null,
+            "sections": [{
+                    "display": {
+                        "name": {
+                            "en": "Featured Content",
+                            "hn": "लोकप्रिय कहानियां"
+                        }
+                    },
+                    "searchQuery": {
+                        "request": {
+                            "filters": {
+                                "objectType": "Content",
+                                "contentType": ["Resource"],
+                                "status": ["Live"]
+                            },
+                            "sort_by": {
+                                "me_averageRating": "desc"
+                            },
+                            "limit": 10,
+                            "exists": ["badgeAssertions"]
+                        }
+                        
+                    },
+                    "recommend": null,
+                    "contents": [],
+                    "resmsgid": "3007071e-abe1-46aa-bbe3-840e0aa26c5e",
+                    "apiid": "ekstep.composite-search.search",
+                    "filterModifiable": true
+                },
+                {
+                    "display": {
+                        "name": {
+                            "en": "Textbooks",
+                            "hn": "लोकप्रिय कहानियां"
+                        }
+                    },
+                    "searchQuery": {
+                        "request": {
+                            "filters": {
+                                "contentType": ["TextBook"],
+                                "status": ["Live"],
+                                "objectType": ["Content"]
+                            },
+                            "sort_by": {
+                                "me_averageRating": "desc"
+                            },
+                            "limit": 10
+                        }
+                    },
+                    "recommend": null,
+                    "contents": [],
+                    "resmsgid": "3007071e-abe1-46aa-bbe3-840e0aa26c5e",
+                    "apiid": "ekstep.composite-search.search",
+                    "filterModifiable": true
+                },
+                {
+                    "display": {
+                        "name": {
+                            "en": "Learning Material"
+                        }
+                    },
+                    "searchQuery": {
+                        "request": {
+                            "query": "",
+                            "filters": {
+                                "contentType": ["Resource"],
+                                "resourceType": ["learn"],
+                                "status": ["Live"],
+                                "objectType": ["Content"]
+                            },
+                            "sort_by": {
+                                "me_averageRating": "desc"
+                            },
+                            "limit": 10
+                        }
+                    },
+                    "recommend": null,
+                    "contents": [],
+                    "resmsgid": "3007071e-abe1-46aa-bbe3-840e0aa26c5e",
+                    "apiid": "ekstep.composite-search.search",
+                    "filterModifiable": true
+                },
+                {
+                    "display": {
+                        "name": {
+                            "en": "Practice and Test Material"
+                        }
+                    },
+    
+                    "searchQuery": {
+                        "request": {
+                            "query": "",
+                            "filters": {
+                                "contentType": ["Resource"],
+                                "resourceType": ["practice", "test"],
+                                "status": ["Live"],
+                                "objectType": ["Content"]
+                            },
+                            "sort_by": {
+                                "me_averageRating": "desc"
+                            },
+                            "limit": 10
+                        }
+                    },
+                    "recommend": null,
+                    "contents": [],
+                    "resmsgid": "3007071e-abe1-46aa-bbe3-840e0aa26c5e",
+                    "apiid": "ekstep.composite-search.search",
+                    "filterModifiable": true
+                }
+            ]
+        }
+    }
+}

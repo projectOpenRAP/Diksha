@@ -1,5 +1,6 @@
 {
     "active_profile": "diksha",
+    "db" : "dk.db",
     "available_profiles": {
         "diksha": {
             "accepted_extensions": [
