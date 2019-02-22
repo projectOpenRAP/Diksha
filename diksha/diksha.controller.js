@@ -407,63 +407,35 @@ let generateResponseStructure = (rSt) => {
     return defer.promise;
 }
 
-let resolvePromises = (bulkedResponsePromises,sectionNames) => {
-	let defer = q.defer();
-	q.all(bulkedResponsePromises).then(values => {
-        let responses = {};
-
-        for (let i = 0; i < sectionNames.length; i++) {
-            responses[sectionNames[i]] = values[i].responses.map(response => response.fields);
-        }
-
-        //Object.keys(responses).forEach((key, index) => {
-        //let naam = '/home/admin/' + index;
-        //console.log('writing: ', naam);
-        //fs.writeFileSync(naam, JSON.stringify(responses[key], null, 4));
-        //console.log(index + '>' + key + ': ' + JSON.stringify(responses[key], null, 4))
-
-        //	console.log(index+1, ":", key);
-        //});
-
-        return defer.resolve({
-            responses
-        });
-    }).catch(e => {
-        console.log(e);
-        return defer.reject(e);
-    });
-    return defer.promise;
-}
 let doSectionwiseSearch = (sectionObject) => {
 	    let searchpromise;
 	    let queryObject = {
 	      
 		   "conjuncts" : [] 
 	    }    
-	    for(let key in sectionObject)
-            {
+	    for(let key in sectionObject){
                 
-		if(key !== "compatibilityLevel"){
+		    if(key !== "compatibilityLevel"){
     
-			if(typeof sectionObject[key] === "object") {
-				let disjuncts = [];
-				for(let i in sectionObject[key])
-				{	
-				disjuncts.push({ 
-		   			"field" : "archive.items." + key ,
-		   			"match_phrase" : "" + sectionObject[key][i]
-				});
-				}	
-				queryObject.conjuncts.push({disjuncts});
+			    if(typeof sectionObject[key] === "object") {
+				    let disjuncts = [];
+				    for(let i in sectionObject[key])
+				    {	
+				        disjuncts.push({ 
+		   			        "field" : "archive.items." + key ,
+		   			        "match_phrase" : "" + sectionObject[key][i]
+				        });
+				    }	
+				    queryObject.conjuncts.push({disjuncts});
 
-			}
-			else {
-		   	field = { 
-		   		"field" : "archive.items."+ key ,
-		   		"match_phrase" : "" + sectionObject[key]
-				}
-			}		
-				}	
+			    }
+			    else {
+		   	            field = { 
+		   		            "field" : "archive.items."+ key ,
+		   		            "match_phrase" : "" + sectionObject[key]
+				        }
+			    }		
+            }   	
 	    }
 	    
 	     searchPromise = advancedSearch({
@@ -474,9 +446,9 @@ let doSectionwiseSearch = (sectionObject) => {
 }	
 
 let getAllPromises = (responsePromise) => {	
-       let defer = q.defer(); 
+        let defer = q.defer(); 
 	    let hitPromises = [];
-            let hits = JSON.parse(responsePromise.body).hits;
+        let hits = JSON.parse(responsePromise.body).hits;
 	    let total_hits = JSON.parse(responsePromise.body).total_hits;	    
             //console.log('hits found : '+ total_hits);
             //console.log(hits); not here
@@ -530,15 +502,11 @@ let getHomePage = (req, res) => {
     let responseStructure = {};
     let query = [];
     let section = [];
-    let prebuiltQueryStructures = {};
     let sectionResponse = {};
     let sectionNames = [];
     loadSkeletonJson(reqConfig)
         .then(value => {
             loadedJson = value.data;
-            loadedJson.response.sections.forEach(section => {
-                prebuiltQueryStructures[section.display.name.en] = section.searchQuery;
-            });
             let deviceId = parsedReq.id;
             let ets = parsedReq.ets;
             let request = parsedReq.request;
@@ -546,55 +514,55 @@ let getHomePage = (req, res) => {
             let ver = parsedReq.ver;
             let filters = request.filters;
             let configFilters = {};
-	    let bulkPromises = [];
-	    let sectionResponsePromises = [];
+	        let bulkPromises = [];
+            let sectionResponsePromises = [];
             let sections = loadedJson.response.sections;
             let sectionResponse = [];
-		for (let i in sections) {
-		    let sectionObject= {};
-                    sectionNames[i] = sections[i].display.name.en;
-		    configFilters = sections[i].searchQuery.request.filters;
-                    for (let key in filters) {
-                          sectionObject[key] = filters[key];
-                        }
-                    for (let key in configFilters) {
-                          sectionObject[key] = configFilters[key];  
-		    }
-                    //console.log({sectionObject});
-	           sectionResponsePromises.push(doSectionwiseSearch(sectionObject));
-                 } 
-	        
+            for (let i in sections) {
+		        let sectionObject= {};
+                sectionNames[i] = sections[i].display.name.en;
+		        configFilters = sections[i].searchQuery.request.filters;
+                for (let key in filters) {
+                    sectionObject[key] = filters[key];
+                }
+                for (let key in configFilters) {
+                    sectionObject[key] = configFilters[key];  
+                }
+                //console.log({sectionObject});
+	            sectionResponsePromises.push(doSectionwiseSearch(sectionObject));
+            }   
 		return q.all(sectionResponsePromises);				
 	}).then(value => {
 		let responsePromises = [];
-		for(let i in value)
-		responsePromises.push(getAllPromises(value[i]));
-		return q.all(responsePromises); 
+        for(let i in value) {
+            responsePromises.push(getAllPromises(value[i]));
+        }
+        return q.all(responsePromises); 
 	}).then(value => {
 		let responses = {};
 		let defer = q.defer();
-		for(let i in  sectionNames)
-		responses[i] = value[i].responses.map(response => response.fields)
-                return responses;	
+        for(let i in  sectionNames) {
+            responses[i] = value[i].responses.map(response => response.fields)
+        }
+        return responses;	
 	}).then(value => {
-                sectionResponse = value
+        sectionResponse = value
 		return loadSkeletonJson(reqConfig + 'HomePage')	
 	}).then(value => {
 	    responseStructure = value.data;
-		for(let i in sectionResponse)
-	    {	
-		 responseStructure.result.response.sections[i].contents.push(...sectionResponse[i]);
+		for(let i in sectionResponse) {	
+            responseStructure.result.response.sections[i].contents.push(...sectionResponse[i]);
 	    }
 		
 		return generateResponseStructure(responseStructure);	
 	}).then(value => {
-            responseStructure = value.responseStructure;
-            responseStructure.ts = new Date();
-            responseStructure.ver = parsedReq.ver;
-            responseStructure.id = parsedReq.id;
-            responseStructure.name = parsedReq.request.name;
-            responseStructure.params.resmsgid = uuidv4();
-	        responseStructure.params.msgid = uuidv4();
+        responseStructure = value.responseStructure;
+        responseStructure.ts = new Date();
+        responseStructure.ver = parsedReq.ver;
+        responseStructure.id = parsedReq.id;
+        responseStructure.name = parsedReq.request.name;
+        responseStructure.params.resmsgid = uuidv4();
+        responseStructure.params.msgid = uuidv4();
 
            // console.log(JSON.stringify(responseStructure, null, 4));
            // fs.writeFile("/home/admin/api.debug", JSON.stringify(responseStructure), (err, res) => console.log('Written debug info to api.debug'));
@@ -602,7 +570,7 @@ let getHomePage = (req, res) => {
             //let daata = fs.readFileSync("/home/admin/api_working.debug", 'utf-8');
             //return res.status(200).json(JSON.parse(daata));
             
-            return res.status(200).json(responseStructure);
+        return res.status(200).json(responseStructure);
         }).catch(e => {
             console.log(e);
             return res.status(500).json({
