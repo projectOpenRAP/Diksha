@@ -1015,7 +1015,7 @@ let readFileWithPromise = (path) => {
 	return defer.promise;
 }
 
-let getEcarName = (id, ver) => `${id}_${ver.toFixed(1)}.ecar`;
+let getEcarName = (id, ver) => `${id}_0.0.ecar`;
 
 let doPostExtraction = (dir, file) => {
     let defer = q.defer();
