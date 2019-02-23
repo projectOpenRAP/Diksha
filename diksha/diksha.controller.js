@@ -369,10 +369,10 @@ let generateResponseStructure = (rSt) => {
 	let cacheQuery;
 
 	secs = secs.map(sec => {
-		let search = sec.search;
+		let search = sec.searchQuery;
 
 		let strDisplay = JSON.stringify(sec.display);
-		let searchQuery = JSON.stringify(sec.search);
+		let searchQuery = JSON.stringify(sec.searchQuery);
 
 		if(!search) {
 			searchQuery = cacheQuery;
@@ -384,7 +384,7 @@ let generateResponseStructure = (rSt) => {
 			...sec,
 			display: strDisplay,
 			name: sec.display.name.en,
-			searchQuery
+			searchQuery: searchQuery
 		};
 	});
 
