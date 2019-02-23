@@ -254,34 +254,28 @@ let doThoroughSearch = (queryString) => {
 
     if (typeof queryString !== 'object') {
         searchPromise = search({
-            indexName: pluginProfile.db,
+            indexName: pluginProfile.available_profiles.diksha.db,
             searchString: queryString
         });
     } else {
         searchPromise = advancedSearch({
-            indexName: pluginProfile.db,
+            indexName: pluginProfile.available_profiles.diksha.db,
             query: queryString
         });
     }
-  console.log({searchPromise});
    searchPromise
         .then(value => {
             let defer2 = q.defer();
             let hitPromises = [];
             let hits = JSON.parse(value.body).hits;
-            // console.log('\nhits\n')
-            // console.log(hits);
-            //console.log(hits); not here
             for (let i in hits) {
                 let id = hits[i].id;
-                //console.log("Getting document " + id); not here
-                hitPromises.push(getDocument({
-                    indexName: pluginProfile.db,
+                    hitPromises.push(getDocument({
+                    indexName: pluginProfile.available_profiles.diksha.db,
                     documentID: id
                 }));
             }
             q.allSettled(hitPromises).then(values => {
-                //console.log(values.map(val => val.value)); not here
                 return defer2.resolve((parseResults(values)));
             })
             return defer2.promise;
@@ -375,10 +369,10 @@ let generateResponseStructure = (rSt) => {
 	let cacheQuery;
 
 	secs = secs.map(sec => {
-		let search = sec.searchQuery;
+		let search = sec.search;
 
 		let strDisplay = JSON.stringify(sec.display);
-		let searchQuery = JSON.stringify(sec.searchQuery);
+		let searchQuery = JSON.stringify(sec.search);
 
 		if(!search) {
 			searchQuery = cacheQuery;
@@ -390,16 +384,11 @@ let generateResponseStructure = (rSt) => {
 			...sec,
 			display: strDisplay,
 			name: sec.display.name.en,
-			searchQuery : searchQuery
+			searchQuery
 		};
 	});
 
 	rSt.result.response.sections = secs;
-
-//	console.log({secs});
-
-    //let foo = rSt.result.response
-    //console.log(JSON.stringify(foo, null, 4));
 
     defer.resolve({
 	    responseStructure: rSt
@@ -439,24 +428,21 @@ let doSectionwiseSearch = (sectionObject) => {
 	    }
 	    
 	     searchPromise = advancedSearch({
-	        indexName : pluginProfile.db,
+	        indexName : pluginProfile.available_profiles.diksha.db,
 	        query : queryObject
 	    });
 		return searchPromise;
 }	
 
-let getAllPromises = (responsePromise) => {	
+let resolvePromises = (responsePromiseList) => {	
         let defer = q.defer(); 
 	    let hitPromises = [];
-        let hits = JSON.parse(responsePromise.body).hits;
-	    let total_hits = JSON.parse(responsePromise.body).total_hits;	    
-            //console.log('hits found : '+ total_hits);
-            //console.log(hits); not here
+        let hits = JSON.parse(responsePromiseList.body).hits;
+	    let total_hits = JSON.parse(responsePromiseList.body).total_hits;	    
             for (let i in hits) {
                 let id = hits[i].id;
-                //console.log("Getting document " + id); not here
                 hitPromises.push(getDocument({
-                    indexName: pluginProfile.db,
+                    indexName: pluginProfile.available_profiles.diksha.db,
                     documentID: id
                 }));
             }
@@ -528,19 +514,17 @@ let getHomePage = (req, res) => {
                 for (let key in configFilters) {
                     sectionObject[key] = configFilters[key];  
                 }
-                //console.log({sectionObject});
-	            sectionResponsePromises.push(doSectionwiseSearch(sectionObject));
+                sectionResponsePromises.push(doSectionwiseSearch(sectionObject));
             }   
 		return q.all(sectionResponsePromises);				
 	}).then(value => {
 		let responsePromises = [];
         for(let i in value) {
-            responsePromises.push(getAllPromises(value[i]));
+            responsePromises.push(resolvePromises(value[i]));
         }
         return q.all(responsePromises); 
 	}).then(value => {
 		let responses = {};
-		let defer = q.defer();
         for(let i in  sectionNames) {
             responses[i] = value[i].responses.map(response => response.fields)
         }

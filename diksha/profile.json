@@ -1,12 +1,12 @@
 {
     "active_profile": "diksha",
-    "db" : "dk.db",
     "available_profiles": {
         "diksha": {
             "accepted_extensions": [
                 ".ecar",
                 ".json"
             ],
+            "db" : "dk.db",
             "cdn_scripts_dir": "/opt/opencdn/CDN/",
             "cdn_url": "http://www.openrap.com",
             "config_json_dir": "/home/admin/diksha/config_json/",
