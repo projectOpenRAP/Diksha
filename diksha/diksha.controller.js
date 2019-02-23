@@ -3,7 +3,9 @@ let FormData = require('form-data');
 let pluginProfile = require('./profile.json');
 let {
     extractZip,
-    deleteDir
+    deleteDir,
+    readdir,
+    getInfo
 } = require('../../../filesdk');
 let fs = require('fs');
 var zlib =
@@ -956,38 +958,35 @@ let deleteEcarData = (dir, file) => {
 */
 
 let moveInternalFolders = (dir, fileNameAsFolder) => {
-    let folder = dir + fileNameAsFolder;
     let defer = q.defer();
-    fs.readdir(folder, (err, files) => {
-        if (err) {
-            console.log("Error 758");
-            console.log(err);
-            return defer.reject(null);
-        } else {
-            console.log(files);
-            let internalFolder = null;
-            moveFilePromises = [];
-            for (let i = 0; i < files.length; i++) {
-                console.log(folder + files[i]);
-                fs.stat(folder + files[i], (err, stats) => {
-                    if (err) {
-                        console.log(folder + files[i]);
-                        console.log("767");
-                    } else if (stats.isDirectory()) {
-                        console.log("directory found");
-                        internalFolder = files[i];
-                        moveFilePromises.push(moveFileWithPromise(folder + internalFolder, dir + 'xcontent/' + internalFolder));
-                        return defer.resolve(files[i]);
-                    }
-                });
-            }
-            q.all(moveFilePromises).then(value => {
-                return defer.resolve();
-            }).catch(e => {
-                return defer.reject(e);
-            });
-        }
-    });
+    const parent = dir + fileNameAsFolder;
+	
+	readdir(parent)
+		.then(files => {
+			const filesDetailsPromises = files.map(file => {
+				const path = parent + file;
+				return getInfo(path).then(stats => ({
+					...stats,
+					path,
+					name: file,
+					isDirectory: stats.isDirectory()
+				}));
+			});
+
+			return q.all(filesDetailsPromises);
+		})
+		.then(filesDetails => {
+			const internalFolders = filesDetails.filter(item => item.isDirectory);
+			const moveFilePromises = internalFolders.map(folder => moveFileWithPromise(folder.path, `${dir}xcontent/${folder.name}`));
+			return q.all(moveFilePromises);
+		})
+		.then(moveFileStatus => {	
+            defer.resolve();
+        })
+        .catch(e => {
+            defer.reject(e);
+        });
+
     return defer.promise;
 }
 
@@ -1005,7 +1004,7 @@ let readFileWithPromise = (path) => {
 	return defer.promise;
 }
 
-let getEcarName = (id, ver) => `${id}_${ver.toFixed(1)}.ecar`;
+let getEcarName = (id, ver) => `${id}_0.0.ecar`;
 
 let doPostExtraction = (dir, file) => {
     let defer = q.defer();
