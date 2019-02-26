@@ -67,7 +67,7 @@
         <overwriteRemoteDeviceNamesOnConnect>false</overwriteRemoteDeviceNamesOnConnect>
         <tempIndexMinBlocks>10</tempIndexMinBlocks>
         <trafficClass>0</trafficClass>
-        <defaultFolderPath>/home/admin/diksha</defaultFolderPath>
+        <defaultFolderPath>/home/admin/</defaultFolderPath>
         <setLowPriority>true</setLowPriority>
         <maxConcurrentScans>0</maxConcurrentScans>
         <minHomeDiskFreePct>0</minHomeDiskFreePct>
