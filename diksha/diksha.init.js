@@ -128,6 +128,9 @@ let initialize = () => {
         return createFolderIfNotExists(dikshaData.media_root);
     }).then(value => {
         console.log("Created " + dikshaData.media_root);
+        return createFolderIfNotExists(`${dikshaData.media_root}/.stfolder`);
+    }).then(value => {
+        console.log("Created " + `${dikshaData.media_root}/.stfolder`);
         return createFolderIfNotExists(dikshaData.telemetry);
     }).then(value => {
         console.log("Created " + dikshaData.telemetry);
