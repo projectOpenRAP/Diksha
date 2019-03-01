@@ -52,11 +52,22 @@ let initializeDikshaData = (path) => {
 
 let processEcarFiles = (filePath) => {
     return readdir(filePath)
-        .then(files => {	
+        .then(files => {
             return files
                 .filter(file => file.endsWith('.ecar'))
                 .reduce((chainedExtractPromises, file) => {
-                    return chainedExtractPromises.then(() => extractFile(filePath, file));
+                    return chainedExtractPromises.then(
+                        () => {
+                            console.log(`Extraction of ${file} completed.`);
+
+                            return extractFile(filePath, file);
+                        },
+                        err => {
+                            console.log(`Extraction of ${file} failed.`);
+                            console.log(err);
+
+                            return extractFile(filePath, file);
+                        });
                 }, q.when());
         });
 }
