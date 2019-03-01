@@ -61,7 +61,7 @@
                 "display": {
                     "name": {
                         "en": "Collections",
-                        "hn": "सबसे लोकप्रिय"
+                        "hn": "संग्रह"
                     }
                 },
                 "search": {
@@ -166,7 +166,7 @@
                 "display": {
                     "name": {
                         "en": "Activities",
-                        "hn": "लोकप्रिय कहानियां"
+                        "hn": "गतिविधियाँ"
                     }
                 },
                 "search": {
@@ -175,6 +175,41 @@
                     "filters": {
                         "contentType": [
                             "Game"
+                        ],
+                        "objectType": [
+                            "Content"
+                        ],
+                        "status": [
+                            "Live"
+                        ]
+                    },
+                    "sort_by": {
+                        "popularity": "desc"
+                    },
+                    "mode": "soft",
+                    "facets": [
+                        "contentType",
+                        "domain",
+                        "ageGroup",
+                        "language",
+                        "gradeLevel"
+                    ]
+                },
+                "filterModifiable": true
+            },
+            {
+                "display": {
+                    "name": {
+                        "en": "Textbooks",
+                        "hn": " पाठ्यपुस्तकें"
+                    }
+                },
+                "search": {
+                    "query": "",
+                    "limit": 200,
+                    "filters": {
+                        "contentType": [
+                            "TextBook"
                         ],
                         "objectType": [
                             "Content"

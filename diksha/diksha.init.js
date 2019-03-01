@@ -7,6 +7,7 @@ let {
     extractFile
 } = require('./diksha.controller.js');
 let {
+    readdir,
     deleteDir
 } = require('../../../filesdk');
 let {
@@ -50,32 +51,16 @@ let initializeDikshaData = (path) => {
 */
 
 let processEcarFiles = (filePath) => {
-    let defer = q.defer();
-    fs.readdir(filePath, (err, files) => {
-        if (err) {
-            console.log(err);
-            return defer.reject(err);
-        } else {
-            let extractPromises = [];
-            for (let i = 0; i < files.length; i++) {
-                let file = files[i];
-                if (file.slice(file.lastIndexOf(".") + 1) === 'ecar') {
-                    extractPromises.push(extractFile(filePath, file));
-                }
-            }
-            q.allSettled(extractPromises).then(values => {
-                let statuses = values.map((value, index) => value.state);
-                let failIndex = statuses.indexOf("rejected");
-                if (failIndex > -1) {
-                    return defer.reject(values[failIndex]);
-                } else {
-                    return defer.resolve(values);
-                }
-            });
-        }
-    });
-    return defer.promise;
+    return readdir(filePath)
+        .then(files => {	
+            return files
+                .filter(file => file.endsWith('.ecar'))
+                .reduce((chainedExtractPromises, file) => {
+                    return chainedExtractPromises.then(() => extractFile(filePath, file));
+                }, q.when());
+        });
 }
+
 /*
     Adds the JSON files to BleveSearch Database
 */

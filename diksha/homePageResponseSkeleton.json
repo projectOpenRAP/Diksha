@@ -17,7 +17,7 @@
             "sections": [{
                     "display": {
                         "name": {
-                            "en": "Best of Genie",
+                            "en": "Featured Content",
                             "hn": "लोकप्रिय कहानियां"
                         }
                     },
@@ -62,70 +62,6 @@
                     "resmsgid": "3007071e-abe1-46aa-bbe3-840e0aa26c5e",
                     "apiid": "ekstep.composite-search.search",
                     "filterModifiable": true
-                },
-                {
-                    "display": {
-                        "name": {
-                            "en": "Recommended",
-                            "hn": "सलाह"
-                        }
-                    },
-                    "search": null,
-                    "recommend": {
-                        "context": {
-                            "contentid": "domain_1111",
-                            "did": "5edf49c4-313c-4f57-fd52-9bfe35e3b9v7",
-                            "dlang": "en"
-                        },
-                        "query": "",
-                        "limit": 10,
-                        "sort_by": null,
-                        "filters": null,
-                        "facets": null
-                    },
-                    "contents": [],
-                    "resmsgid": "54d2b48b-7c9f-4974-a942-87ea3be75c6f",
-                    "apiid": "ekstep.analytics.recommendations",
-                    "filterModifiable": false
-                },
-                {
-                    "display": {
-                        "name": {
-                            "en": "Collections",
-                            "hn": "सबसे लोकप्रिय"
-                        }
-                    },
-                    "search": {
-                        "query": "",
-                        "limit": 10,
-                        "sort_by": {
-                            "popularity": "desc"
-                        },
-                        "filters": {
-                            "ageGroup": [
-                                "5-6"
-                            ],
-                            "contentType": [
-                                "Collection"
-                            ],
-                            "objectType": [
-                                "Content"
-                            ],
-                            "status": [
-                                "Live"
-                            ]
-                        },
-                        "facets": [
-                            "contentType",
-                            "domain",
-                            "ageGroup",
-                            "language",
-                            "gradeLevel"
-                        ],
-                        "mode": "soft"
-                    },
-                    "recommend": null,
-                    "contents": []
                 }
             ]
         }
