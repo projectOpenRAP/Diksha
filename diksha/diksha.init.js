@@ -76,7 +76,7 @@ let processEcarFiles = (filePath) => {
     Adds the JSON files to BleveSearch Database
 */
 
-let jsonDirTob = () => {
+let indexMetaDataIntoBleveDb = () => {
     /*
         Updated behavior: Carpet bomb the index and rebuild from scratch
     */
@@ -133,11 +133,11 @@ let initialize = () => {
         console.log("Created " + dikshaData.unzip_content);
         return processEcarFiles(dikshaData.media_root);
     }).then(value => {
-       jsonDirTob();
+        indexMetaDataIntoBleveDb();
     }, reason => {
         console.log(reason);
         console.log("There seem to be corrupt ecar files in the directory.");
-        jsonDirTob();
+        indexMetaDataIntoBleveDb();
     }).then(value => {
         console.log("Initialized API Server");
     }).catch(e => {
