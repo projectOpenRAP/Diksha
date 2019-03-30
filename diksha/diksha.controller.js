@@ -249,7 +249,7 @@ let parseResults = (values) => {
 /*
     Identifies the documents that solve a query and extracts all metadata from them
 */
-let doThoroughSearch = (queryString) => {
+let doThoroughSearch = (queryString,Limit,Offset) => {
     let defer = q.defer();
 
     let searchPromise;
@@ -257,7 +257,9 @@ let doThoroughSearch = (queryString) => {
     if (typeof queryString !== 'object') {
         searchPromise = search({
             indexName: pluginProfile.available_profiles.diksha.db,
-            searchString: queryString
+            searchString: queryString,
+	        limit : Limit,
+	        offset : Offset
         });
     } else {
         searchPromise = advancedSearch({
@@ -612,45 +614,83 @@ let performSearch = (req, res) => {
     let facets = request.facets;
     let responseStructure = {};
     let secondaryQuery = request.filters.identifier || request.filters.contentType;
+    if("offset" in request) {
+    	let query = request.query || secondaryQuery.join(' ');
+    	let limit = request.limit;
+        let offset = request.offset;
+	    if (query.length < 1) {
+        	query = request.filters.identifier[0];
+    	}	
+    	loadSkeletonJson('searchResponseSkeleton').then(value => {
+        	responseStructure = value.data;
+        	return doThoroughSearch(query,limit,offset);
+    	}).then(value => {
+        	//console.log(value);
+        	let mappedValues = value.responses.map(val => val.fields);
+        	return performCounting(mappedValues, facets);
+    	}).then(value => {
+        	responseStructure.result.count = value.results.length;
+       		responseStructure.result.content = value.results;
+        	responseStructure.result.facets = value.facets;
+        	//console.log('performSearch resposne \n', JSON.stringify(responseStructure, null, 4));
+        	//console.log('\n/performSearch response');
+        	fs.writeFile("/home/admin/api_search.debug", JSON.stringify(responseStructure), (err, res) => console.log({
+            	err,
+            	res
+        	}));
+        	return res.status(200).json(responseStructure);
+    	}).catch(e => {
+        	console.log(e);
+        	return res.status(500).json({
+            	e
+        	});
+    	});
 
-    let query = request.query || secondaryQuery.join(' ');
-    if (query.length < 1) {
-        query = request.filters.identifier[0];
-    }
-    loadSkeletonJson('searchResponseSkeleton').then(value => {
-        responseStructure = value.data;
-        return doThoroughSearch(query);
-    }).then(value => {
-        //console.log(value);
-        let mappedValues = value.responses.map(val => val.fields);
-        return performCounting(mappedValues, facets);
-    }).then(value => {
-        responseStructure.result.count = value.results.length;
-        responseStructure.result.content = value.results;
-        responseStructure.result.facets = value.facets;
-        //console.log('performSearch resposne \n', JSON.stringify(responseStructure, null, 4));
-        //console.log('\n/performSearch response');
-        fs.writeFile("/home/admin/api_search.debug", JSON.stringify(responseStructure), (err, res) => console.log({
-            err,
-            res
-        }));
-        return res.status(200).json(responseStructure);
-    }).catch(e => {
-        console.log(e);
-        return res.status(500).json({
-            e
-        });
-    });
+    } 
+    else {   
+    	let query = request.query || secondaryQuery.join(' ');
+	    let limit = 1000;
+	    let offset = 0;
+    	if (query.length < 1) {
+        	query = request.filters.identifier[0];
+    	}	
+    	loadSkeletonJson('searchResponseSkeleton').then(value => {
+        	responseStructure = value.data;
+        	return doThoroughSearch(query,limit,offset);
+    	}).then(value => {
+        	//console.log(value);
+        	let mappedValues = value.responses.map(val => val.fields);
+        	return performCounting(mappedValues, facets);
+    	}).then(value => {
+        	responseStructure.result.count = value.results.length;
+       		responseStructure.result.content = value.results;
+        	responseStructure.result.facets = value.facets;
+        	//console.log('performSearch resposne \n', JSON.stringify(responseStructure, null, 4));
+        	//console.log('\n/performSearch response');
+        	fs.writeFile("/home/admin/api_search.debug", JSON.stringify(responseStructure), (err, res) => console.log({
+            	err,
+            	res
+        	}));
+        	return res.status(200).json(responseStructure);
+    	}).catch(e => {
+        	console.log(e);
+        	return res.status(500).json({
+            	e
+        	});
+    	});
+    }	    
 }
 
 let getEcarById = (req, res) => {
     log('getEcarById', req.params, req.path);
     let contentID = req.params.contentID;
+    let limit = 1000;
+    let offset = 0;
     let responseStructure = {};
     loadSkeletonJson('searchIdResponseSkeleton')
         .then(value => {
             responseStructure = value.data;
-            return doThoroughSearch(contentID);
+            return doThoroughSearch(contentID,limit,offset);
         }).then(value => {
             responseStructure.result.content = value.responses[0].fields;
             return res.status(200).json(responseStructure);
